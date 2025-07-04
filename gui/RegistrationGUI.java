@@ -48,8 +48,8 @@ public class RegistrationGUI extends JFrame {
         refreshEventList();
 
         registerButton.addActionListener(e -> register());
-        backButton.addActionListener(e -> {
-            new MainMenuGUI().setVisible(true);
+                backButton.addActionListener(e -> {
+            new MainMenuGUI("Participant").setVisible(true); // use role-based back
             dispose();
         });
     }

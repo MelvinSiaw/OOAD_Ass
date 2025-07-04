@@ -31,7 +31,7 @@ public class BillGUI extends JFrame {
 
         calcButton.addActionListener(e -> calcBill());
         backButton.addActionListener(e -> {
-            new MainMenuGUI().setVisible(true);
+            new MainMenuGUI("Participant").setVisible(true); // role-based back
             dispose();
         });
     }
@@ -51,7 +51,7 @@ public class BillGUI extends JFrame {
             return;
         }
 
-        DiscountStrategy discount = new GroupDiscount();  // use group discount
+        DiscountStrategy discount = new GroupDiscount();
         Bill bill = FeeCalculator.calculate(r, discount);
 
         JOptionPane.showMessageDialog(this, bill.toString());
