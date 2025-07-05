@@ -20,7 +20,11 @@ public class RegistrationGUI extends JFrame {
     private final JCheckBox cateringBox, transportBox;
     private final JButton registerButton, backButton;
 
-    public RegistrationGUI() {
+    private final MainMenuGUI parentMenu;  // 新增
+
+    public RegistrationGUI(MainMenuGUI parentMenu) {
+        this.parentMenu = parentMenu;
+
         setTitle("Event Registration");
         setSize(600, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -48,8 +52,9 @@ public class RegistrationGUI extends JFrame {
         refreshEventList();
 
         registerButton.addActionListener(e -> register());
-                backButton.addActionListener(e -> {
-            new MainMenuGUI("Participant").setVisible(true); // use role-based back
+        backButton.addActionListener(e -> {
+            parentMenu.showParticipantMenu();
+            parentMenu.setVisible(true);
             dispose();
         });
     }
@@ -64,7 +69,7 @@ public class RegistrationGUI extends JFrame {
     }
 
     private void register() {
-        Event e = eventJList.getSelectedValue();  // no index problem
+        Event e = eventJList.getSelectedValue();
         if (e == null) {
             JOptionPane.showMessageDialog(this, "Please select an event to register!");
             return;

@@ -11,7 +11,11 @@ public class BillGUI extends JFrame {
     private final JList<Registration> regJList = new JList<>(regListModel);
     private final JButton calcButton, backButton;
 
-    public BillGUI() {
+    private final MainMenuGUI parentMenu;
+
+    public BillGUI(MainMenuGUI parentMenu) {
+        this.parentMenu = parentMenu;
+
         setTitle("View Bills");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,7 +35,8 @@ public class BillGUI extends JFrame {
 
         calcButton.addActionListener(e -> calcBill());
         backButton.addActionListener(e -> {
-            new MainMenuGUI("Participant").setVisible(true); // role-based back
+            parentMenu.showParticipantMenu();
+            parentMenu.setVisible(true);
             dispose();
         });
     }

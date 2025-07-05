@@ -1,8 +1,8 @@
 package gui;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import javax.swing.*;
 import model.Event;
 import model.EventManager;
 
@@ -14,7 +14,11 @@ public class EventManagementGUI extends JFrame {
     private final JTextField nameField, dateField, venueField, capacityField, feeField;
     private final JComboBox<String> typeComboBox;
 
-    public EventManagementGUI() {
+    private final MainMenuGUI parentMenu; // 引用
+
+    public EventManagementGUI(MainMenuGUI parentMenu) {
+        this.parentMenu = parentMenu;
+
         setTitle("Event Management");
         setSize(600, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,7 +61,8 @@ public class EventManagementGUI extends JFrame {
         updateButton.addActionListener(e -> updateEvent());
         cancelButton.addActionListener(e -> cancelEvent());
         backButton.addActionListener(e -> {
-            new MainMenuGUI("Organizer").setVisible(true); // use role-based back
+            parentMenu.showOrganizerMenu();
+            parentMenu.setVisible(true);
             dispose();
         });
 
