@@ -24,7 +24,6 @@ public class RegistrationGUI extends JFrame {
 
     public RegistrationGUI(MainMenuGUI parentMenu) {
         this.parentMenu = parentMenu;
-        System.out.println("Attached parent: " + parentMenu.getTitle());  // 保证 IDE 看到使用
 
         setTitle("Event Registration");
         setSize(600, 500);
