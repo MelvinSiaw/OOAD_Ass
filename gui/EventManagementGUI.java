@@ -154,37 +154,45 @@ public class EventManagementGUI extends JFrame {
         }
     }
 
-    private void viewRegistrations() {
-        int idx = eventJList.getSelectedIndex();
-        if (idx < 0) {
-            JOptionPane.showMessageDialog(this, "Please select an event first!");
-            return;
-        }
-        Event ev = eventManager.getAllEvents().get(idx);
-
-        java.util.List<Registration> regs = RegistrationManager
-                .getInstance()
-                .getRegistrationsByEvent(ev);
-
-        if (regs.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No registrations for this event yet.");
-            return;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (var r : regs) {
-            sb.append("- ")
-            .append(r.getParticipant().getName())
-            .append(" (").append(r.getParticipant().getId()).append(")\n")
-            .append("  Group Size: ").append(r.getGroupSize()).append("\n")
-            .append("  Catering: ").append(r.hasCatering() ? "Yes" : "No").append("\n")
-            .append("  Transport: ").append(r.hasTransportation() ? "Yes" : "No").append("\n")
-            .append("----------------------------\n");
-        }
-        JOptionPane.showMessageDialog(this, sb.toString(),
-                "Registrations for " + ev.getName(),
-                JOptionPane.INFORMATION_MESSAGE);
+private void viewRegistrations() {
+    int idx = eventJList.getSelectedIndex();
+    if (idx < 0) {
+        JOptionPane.showMessageDialog(this, "Please select an event first!");
+        return;
     }
+    Event ev = eventManager.getAllEvents().get(idx);
+
+    if (ev.isCancelled()) {
+        JOptionPane.showMessageDialog(this,
+            "This event has been cancelled. Registrations are no longer available.",
+            "Cancelled Event", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    java.util.List<Registration> regs = RegistrationManager
+            .getInstance()
+            .getRegistrationsByEvent(ev);
+
+    if (regs.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "No registrations for this event yet.");
+        return;
+    }
+
+    StringBuilder sb = new StringBuilder();
+    for (var r : regs) {
+        sb.append("- ")
+          .append(r.getParticipant().getName())
+          .append(" (").append(r.getParticipant().getId()).append(")\n")
+          .append("  Group Size: ").append(r.getGroupSize()).append("\n")
+          .append("  Catering: ").append(r.hasCatering() ? "Yes" : "No").append("\n")
+          .append("  Transport: ").append(r.hasTransportation() ? "Yes" : "No").append("\n")
+          .append("----------------------------\n");
+    }
+    JOptionPane.showMessageDialog(this, sb.toString(),
+            "Registrations for " + ev.getName(),
+            JOptionPane.INFORMATION_MESSAGE);
+}
+
 
     private void refreshEventList() {
         eventListModel.clear();

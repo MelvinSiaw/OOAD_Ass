@@ -7,8 +7,8 @@ import model.*;
 
 public class BillGUI extends JFrame {
     private final RegistrationManager regManager = RegistrationManager.getInstance();
-    private final DefaultListModel<Registration> regListModel = new DefaultListModel<>();
-    private final JList<Registration> regJList = new JList<>(regListModel);
+    private final DefaultListModel<String> regListModel = new DefaultListModel<>();
+    private final JList<String> regJList = new JList<>(regListModel);
     private final JButton calcButton, backButton;
 
     private final MainMenuGUI parentMenu;
@@ -45,14 +45,29 @@ public class BillGUI extends JFrame {
         regListModel.clear();
         ArrayList<Registration> regs = regManager.getAllRegistrations();
         for (Registration r : regs) {
-            regListModel.addElement(r);
+            String status = r.getEvent().isCancelled() ? " [CANCELLED]" : "";
+            String display = r.getParticipant().getName()
+                + " (Group size: " + r.getGroupSize() + ") registered for "
+                + r.getEvent().getName()
+                + status;
+            regListModel.addElement(display);
         }
     }
 
     private void calcBill() {
-        Registration r = regJList.getSelectedValue();
-        if (r == null) {
+        int idx = regJList.getSelectedIndex();
+        if (idx < 0) {
             JOptionPane.showMessageDialog(this, "Please select a registration first!");
+            return;
+        }
+
+        // 重新获得 Registration 对象
+        Registration r = regManager.getAllRegistrations().get(idx);
+
+        if (r.getEvent().isCancelled()) {
+            JOptionPane.showMessageDialog(this,
+                "This event has been cancelled. Bill is no longer valid.",
+                "Cancelled Event", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
