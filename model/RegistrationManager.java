@@ -1,5 +1,6 @@
 package model;
 import java.util.ArrayList;
+import java.util.List;
 
 public class RegistrationManager {
     private static RegistrationManager instance;
@@ -22,5 +23,11 @@ public class RegistrationManager {
 
     public ArrayList<Registration> getAllRegistrations() {
         return registrations;
+    }
+
+    public List<Registration> getRegistrationsByEvent(Event e) {
+    return registrations.stream()
+        .filter(r -> r.getEvent().equals(e))
+        .toList();
     }
 }
