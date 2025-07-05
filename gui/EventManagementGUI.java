@@ -230,6 +230,7 @@ public class EventManagementGUI extends JFrame {
     new EventRegistrationListGUI(this, ev).setVisible(true);
     setVisible(false);
 }
+
     private void clearFields() {
         nameField.setText("");
         dateField.setText("");

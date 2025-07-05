@@ -47,9 +47,5 @@ public class EventManager {
         }
     }
 
-    public void deleteEvent(int index) {
-        if (index >= 0 && index < eventList.size()) {
-            eventList.remove(index);
-        }
-    }
+    
 }
