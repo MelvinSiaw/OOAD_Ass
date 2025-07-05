@@ -20,7 +20,6 @@ public class EventManagementGUI extends JFrame {
 
     public EventManagementGUI(MainMenuGUI parentMenu) {
         this.parentMenu = parentMenu;
-        System.out.println("Attached parent: " + parentMenu.getTitle());  // 防止黄线
 
         setTitle("Event Management");
         setSize(700, 550);
