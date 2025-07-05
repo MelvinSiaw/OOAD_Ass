@@ -20,10 +20,11 @@ public class RegistrationGUI extends JFrame {
     private final JCheckBox cateringBox, transportBox;
     private final JButton registerButton, backButton;
 
-    private final MainMenuGUI parentMenu;  // 新增
+    private final MainMenuGUI parentMenu;
 
     public RegistrationGUI(MainMenuGUI parentMenu) {
         this.parentMenu = parentMenu;
+        System.out.println("Attached parent: " + parentMenu.getTitle());  // 保证 IDE 看到使用
 
         setTitle("Event Registration");
         setSize(600, 500);
@@ -77,16 +78,21 @@ public class RegistrationGUI extends JFrame {
 
         String name = nameField.getText().trim();
         String pid = idField.getText().trim();
-        int groupSize;
-        try {
-            groupSize = Integer.parseInt(groupSizeField.getText().trim());
-            if (groupSize <= 0) groupSize = 1;
-        } catch (NumberFormatException ex) {
-            groupSize = 1;
-        }
 
         if (name.isEmpty() || pid.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Name and ID are required!");
+            return;
+        }
+
+        int groupSize;
+        try {
+            groupSize = Integer.parseInt(groupSizeField.getText().trim());
+            if (groupSize <= 0) {
+                JOptionPane.showMessageDialog(this, "Group size must be positive!");
+                return;
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Group size must be a valid number!");
             return;
         }
 
