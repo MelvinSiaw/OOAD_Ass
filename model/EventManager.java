@@ -1,4 +1,5 @@
 package model;
+
 import java.util.ArrayList;
 
 public class EventManager {
@@ -9,7 +10,6 @@ public class EventManager {
         eventList = new ArrayList<>();
     }
 
-    // Singleton getter
     public static EventManager getInstance() {
         if (instance == null) {
             instance = new EventManager();
@@ -22,12 +22,22 @@ public class EventManager {
     }
 
     public ArrayList<Event> getAllEvents() {
-    return eventList;
+        return eventList;
     }
 
+    /**
+     * Update event properties WITHOUT replacing the object reference,
+     * so that Registration still points to the same event.
+     */
     public void updateEvent(int index, Event updatedEvent) {
         if (index >= 0 && index < eventList.size()) {
-            eventList.set(index, updatedEvent);
+            Event existing = eventList.get(index);
+            existing.setName(updatedEvent.getName());
+            existing.setDate(updatedEvent.getDate());
+            existing.setVenue(updatedEvent.getVenue());
+            existing.setType(updatedEvent.getType());
+            existing.setCapacity(updatedEvent.getCapacity());
+            existing.setFee(updatedEvent.getFee());
         }
     }
 

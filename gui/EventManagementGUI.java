@@ -1,17 +1,23 @@
 package gui;
 
-import java.awt.*;
-import java.util.ArrayList;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import model.Event;
 import model.EventManager;
-import model.Registration;
-import model.RegistrationManager;
 
 public class EventManagementGUI extends JFrame {
     private final EventManager eventManager = EventManager.getInstance();
-    private final DefaultListModel<String> eventListModel = new DefaultListModel<>();
-    private final JList<String> eventJList = new JList<>(eventListModel);
+
+    private final String[] columns = {"Name", "Date", "Venue", "Type", "Capacity", "Fee", "Status"};
+    private final DefaultTableModel eventTableModel = new DefaultTableModel(columns, 0);
+    private final JTable eventTable = new JTable(eventTableModel);
 
     private final JTextField nameField, dateField, venueField, capacityField, feeField;
     private final JComboBox<String> typeComboBox;
@@ -21,60 +27,103 @@ public class EventManagementGUI extends JFrame {
     public EventManagementGUI(MainMenuGUI parentMenu) {
         this.parentMenu = parentMenu;
 
-        setTitle("Event Management");
-        setSize(700, 550);
+        setTitle("Campus Event Management System - Event Management");
+        setSize(1000, 600);
+        setLocationRelativeTo(null); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new FlowLayout());
 
-        // form fields
-        nameField = new JTextField(20);
-        dateField = new JTextField(20);
-        venueField = new JTextField(20);
-        capacityField = new JTextField(5);
-        feeField = new JTextField(5);
+        JPanel mainPanel = new JPanel(new BorderLayout(15,15));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
 
-        String[] eventTypes = {"Seminar", "Workshop", "Cultural Event", "Sports Event"};
-        typeComboBox = new JComboBox<>(eventTypes);
+        JLabel titleLabel = new JLabel("Event Management", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        mainPanel.add(titleLabel, BorderLayout.NORTH);
+
+        // form
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createTitledBorder("Event Details"));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5,5,5,5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        nameField = new JTextField(15);
+        dateField = new JTextField(15);
+        venueField = new JTextField(15);
+        capacityField = new JTextField(15);
+        feeField = new JTextField(15);
+        typeComboBox = new JComboBox<>(new String[]{"Seminar","Workshop","Cultural Event","Sports Event"});
+
+        gbc.gridx=0; gbc.gridy=0;
+        formPanel.add(new JLabel("Name:"), gbc);
+        gbc.gridx=1;
+        formPanel.add(nameField, gbc);
+
+        gbc.gridx=0; gbc.gridy++;
+        formPanel.add(new JLabel("Date:"), gbc);
+        gbc.gridx=1;
+        formPanel.add(dateField, gbc);
+
+        gbc.gridx=0; gbc.gridy++;
+        formPanel.add(new JLabel("Venue:"), gbc);
+        gbc.gridx=1;
+        formPanel.add(venueField, gbc);
+
+        gbc.gridx=0; gbc.gridy++;
+        formPanel.add(new JLabel("Type:"), gbc);
+        gbc.gridx=1;
+        formPanel.add(typeComboBox, gbc);
+
+        gbc.gridx=0; gbc.gridy++;
+        formPanel.add(new JLabel("Capacity:"), gbc);
+        gbc.gridx=1;
+        formPanel.add(capacityField, gbc);
+
+        gbc.gridx=0; gbc.gridy++;
+        formPanel.add(new JLabel("Fee (RM):"), gbc);
+        gbc.gridx=1;
+        formPanel.add(feeField, gbc);
+
+        mainPanel.add(formPanel, BorderLayout.WEST);
+
+        // event table
+        JScrollPane scrollPane = new JScrollPane(eventTable);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Event List"));
+        scrollPane.setPreferredSize(new Dimension(600,400));
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
 
         // buttons
-        JButton addButton = new JButton("Add Event");
-        JButton updateButton = new JButton("Update Event");
-        JButton cancelButton = new JButton("Cancel Event");
-        JButton viewRegsButton = new JButton("View Registrations"); // 新增
+        JPanel buttonPanel = new JPanel(new GridLayout(1,5,10,10));
+        JButton addButton = new JButton("Add");
+        JButton updateButton = new JButton("Update");
+        JButton cancelButton = new JButton("Cancel");
+        JButton viewRegsButton = new JButton("View Regs");
         JButton backButton = new JButton("Back");
 
-        // layout
-        add(new JLabel("Name:")); add(nameField);
-        add(new JLabel("Date:")); add(dateField);
-        add(new JLabel("Venue:")); add(venueField);
-        add(new JLabel("Type:")); add(typeComboBox);
-        add(new JLabel("Capacity:")); add(capacityField);
-        add(new JLabel("Fee:")); add(feeField);
-        add(addButton); 
-        add(updateButton); 
-        add(cancelButton); 
-        add(viewRegsButton);  // 新增
-        add(backButton);
+        buttonPanel.add(addButton);
+        buttonPanel.add(updateButton);
+        buttonPanel.add(cancelButton);
+        buttonPanel.add(viewRegsButton);
+        buttonPanel.add(backButton);
 
-        JScrollPane scroll = new JScrollPane(eventJList);
-        scroll.setPreferredSize(new Dimension(650, 200));
-        add(scroll);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        refreshEventList();
+        add(mainPanel);
 
-        // actions
+        refreshEventTable();
+
+        // listeners
         addButton.addActionListener(e -> addEvent());
         updateButton.addActionListener(e -> updateEvent());
         cancelButton.addActionListener(e -> cancelEvent());
+        viewRegsButton.addActionListener(e -> viewRegistrations());
         backButton.addActionListener(e -> {
             parentMenu.showOrganizerMenu();
             parentMenu.setVisible(true);
             dispose();
         });
-        viewRegsButton.addActionListener(e -> viewRegistrations());
 
-        eventJList.addListSelectionListener(e -> {
-            int idx = eventJList.getSelectedIndex();
+        eventTable.getSelectionModel().addListSelectionListener(e -> {
+            int idx = eventTable.getSelectedRow();
             if (idx >= 0) {
                 Event ev = eventManager.getAllEvents().get(idx);
                 nameField.setText(ev.getName());
@@ -87,6 +136,21 @@ public class EventManagementGUI extends JFrame {
         });
     }
 
+    private void refreshEventTable() {
+        eventTableModel.setRowCount(0);
+        for(Event ev: eventManager.getAllEvents()) {
+            eventTableModel.addRow(new Object[]{
+                ev.getName(),
+                ev.getDate(),
+                ev.getVenue(),
+                ev.getType(),
+                ev.getCapacity(),
+                ev.getFee(),
+                ev.isCancelled() ? "CANCELLED" : "ACTIVE"
+            });
+        }
+    }
+
     private void addEvent() {
         try {
             String name = nameField.getText().trim();
@@ -96,33 +160,30 @@ public class EventManagementGUI extends JFrame {
             int capacity = Integer.parseInt(capacityField.getText().trim());
             double fee = Double.parseDouble(feeField.getText().trim());
 
-            if (capacity <= 0) {
-                JOptionPane.showMessageDialog(this, "Capacity must be positive.");
+            if(capacity <= 0) {
+                JOptionPane.showMessageDialog(this,"Capacity must be positive.");
                 return;
             }
-
-            Event ev = new Event(name, date, venue, type, capacity, fee);
+            Event ev = new Event(name,date,venue,type,capacity,fee);
             eventManager.addEvent(ev);
-            refreshEventList();
+            refreshEventTable();
             clearFields();
-        } catch (NumberFormatException | NullPointerException ex) {
-            JOptionPane.showMessageDialog(this, "Invalid or missing data!");
+        } catch(Exception ex) {
+            JOptionPane.showMessageDialog(this,"Invalid or missing data!");
         }
     }
 
     private void updateEvent() {
-        int idx = eventJList.getSelectedIndex();
-        if (idx < 0) {
-            JOptionPane.showMessageDialog(this, "Please select an event to update!");
+        int idx = eventTable.getSelectedRow();
+        if(idx < 0) {
+            JOptionPane.showMessageDialog(this,"Please select an event to update.");
             return;
         }
-
         Event existing = eventManager.getAllEvents().get(idx);
-        if (existing.isCancelled()) {
-            JOptionPane.showMessageDialog(this, "Cannot update a cancelled event!");
+        if(existing.isCancelled()) {
+            JOptionPane.showMessageDialog(this,"Cannot update a cancelled event.");
             return;
         }
-
         try {
             String name = nameField.getText().trim();
             String date = dateField.getText().trim();
@@ -131,77 +192,44 @@ public class EventManagementGUI extends JFrame {
             int capacity = Integer.parseInt(capacityField.getText().trim());
             double fee = Double.parseDouble(feeField.getText().trim());
 
-            if (capacity <= 0) {
-                JOptionPane.showMessageDialog(this, "Capacity must be positive");
+            if(capacity <= 0) {
+                JOptionPane.showMessageDialog(this,"Capacity must be positive.");
                 return;
             }
-
-            Event ev = new Event(name, date, venue, type, capacity, fee);
+            Event ev = new Event(name,date,venue,type,capacity,fee);
             eventManager.updateEvent(idx, ev);
-            refreshEventList();
+            refreshEventTable();
             clearFields();
-            JOptionPane.showMessageDialog(this, "Event updated successfully!");
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Capacity and fee must be valid numbers!");
+            JOptionPane.showMessageDialog(this,"Event updated successfully!");
+        } catch(Exception ex) {
+            JOptionPane.showMessageDialog(this,"Invalid or missing data!");
         }
     }
 
     private void cancelEvent() {
-        int idx = eventJList.getSelectedIndex();
-        if (idx >= 0) {
+        int idx = eventTable.getSelectedRow();
+        if(idx >= 0) {
             eventManager.cancelEvent(idx);
-            refreshEventList();
+            refreshEventTable();
+            JOptionPane.showMessageDialog(this,"Event cancelled.");
         }
     }
 
-private void viewRegistrations() {
-    int idx = eventJList.getSelectedIndex();
-    if (idx < 0) {
-        JOptionPane.showMessageDialog(this, "Please select an event first!");
+    private void viewRegistrations() {
+    int idx = eventTable.getSelectedRow();
+    if(idx < 0) {
+        JOptionPane.showMessageDialog(this,"Please select an event first.");
         return;
     }
     Event ev = eventManager.getAllEvents().get(idx);
-
-    if (ev.isCancelled()) {
+    if(ev.isCancelled()) {
         JOptionPane.showMessageDialog(this,
-            "This event has been cancelled. Registrations are no longer available.",
-            "Cancelled Event", JOptionPane.WARNING_MESSAGE);
+            "This event has been cancelled. Registrations are unavailable.");
         return;
     }
-
-    java.util.List<Registration> regs = RegistrationManager
-            .getInstance()
-            .getRegistrationsByEvent(ev);
-
-    if (regs.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "No registrations for this event yet.");
-        return;
-    }
-
-    StringBuilder sb = new StringBuilder();
-    for (var r : regs) {
-        sb.append("- ")
-          .append(r.getParticipant().getName())
-          .append(" (").append(r.getParticipant().getId()).append(")\n")
-          .append("  Group Size: ").append(r.getGroupSize()).append("\n")
-          .append("  Catering: ").append(r.hasCatering() ? "Yes" : "No").append("\n")
-          .append("  Transport: ").append(r.hasTransportation() ? "Yes" : "No").append("\n")
-          .append("----------------------------\n");
-    }
-    JOptionPane.showMessageDialog(this, sb.toString(),
-            "Registrations for " + ev.getName(),
-            JOptionPane.INFORMATION_MESSAGE);
+    new EventRegistrationListGUI(this, ev).setVisible(true);
+    setVisible(false);
 }
-
-
-    private void refreshEventList() {
-        eventListModel.clear();
-        ArrayList<Event> events = eventManager.getAllEvents();
-        for (Event ev : events) {
-            eventListModel.addElement(ev.toString());
-        }
-    }
-
     private void clearFields() {
         nameField.setText("");
         dateField.setText("");

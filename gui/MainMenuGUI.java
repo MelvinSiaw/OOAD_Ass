@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.*;
 import javax.swing.*;
 
 public class MainMenuGUI extends JFrame {
@@ -8,27 +9,36 @@ public class MainMenuGUI extends JFrame {
         initRoleSelectionUI();
     }
 
-    // 角色选择
     private void initRoleSelectionUI() {
         getContentPane().removeAll();
         repaint();
 
         setTitle("Campus Event Management System - Select Role");
-        setSize(400, 250);
+        setSize(1000, 600);                 
+        setLocationRelativeTo(null); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(null);
 
-        JLabel label = new JLabel("Select your role:");
-        label.setBounds(140, 30, 150, 30);
-        add(label);
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
+        JLabel titleLabel = new JLabel("Select Your Role", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+
+        panel.add(titleLabel, BorderLayout.NORTH);
+
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 15, 15));
         JButton organizerButton = new JButton("Organizer");
-        organizerButton.setBounds(100, 80, 200, 30);
-        add(organizerButton);
-
         JButton participantButton = new JButton("Participant");
-        participantButton.setBounds(100, 130, 200, 30);
-        add(participantButton);
+
+        organizerButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        participantButton.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        buttonPanel.add(organizerButton);
+        buttonPanel.add(participantButton);
+
+        panel.add(buttonPanel, BorderLayout.CENTER);
+
+        add(panel);
 
         organizerButton.addActionListener(e -> {
             String password = JOptionPane.showInputDialog(
@@ -59,15 +69,28 @@ public class MainMenuGUI extends JFrame {
         repaint();
 
         setTitle("Campus Event Management System - Organizer Menu");
-        setLayout(null);
 
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JLabel titleLabel = new JLabel("Organizer Menu", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+
+        panel.add(titleLabel, BorderLayout.NORTH);
+
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 15, 15));
         JButton eventButton = new JButton("Event Management");
-        eventButton.setBounds(50, 80, 300, 30);
-        add(eventButton);
-
         JButton roleButton = new JButton("Switch Role");
-        roleButton.setBounds(50, 130, 300, 30);
-        add(roleButton);
+
+        eventButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        roleButton.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        buttonPanel.add(eventButton);
+        buttonPanel.add(roleButton);
+
+        panel.add(buttonPanel, BorderLayout.CENTER);
+
+        add(panel);
 
         eventButton.addActionListener(e -> {
             new EventManagementGUI(this).setVisible(true);
@@ -75,6 +98,7 @@ public class MainMenuGUI extends JFrame {
         });
 
         roleButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "Switching role...");
             initRoleSelectionUI();
             revalidate();
             repaint();
@@ -89,19 +113,31 @@ public class MainMenuGUI extends JFrame {
         repaint();
 
         setTitle("Campus Event Management System - Participant Menu");
-        setLayout(null);
 
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JLabel titleLabel = new JLabel("Participant Menu", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+
+        panel.add(titleLabel, BorderLayout.NORTH);
+
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 15, 15));
         JButton regButton = new JButton("Registration");
-        regButton.setBounds(50, 50, 300, 30);
-        add(regButton);
-
         JButton billButton = new JButton("Bill");
-        billButton.setBounds(50, 100, 300, 30);
-        add(billButton);
-
         JButton roleButton = new JButton("Switch Role");
-        roleButton.setBounds(50, 150, 300, 30);
-        add(roleButton);
+
+        regButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        billButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        roleButton.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        buttonPanel.add(regButton);
+        buttonPanel.add(billButton);
+        buttonPanel.add(roleButton);
+
+        panel.add(buttonPanel, BorderLayout.CENTER);
+
+        add(panel);
 
         regButton.addActionListener(e -> {
             new RegistrationGUI(this).setVisible(true);
@@ -114,6 +150,7 @@ public class MainMenuGUI extends JFrame {
         });
 
         roleButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "Switching role...");
             initRoleSelectionUI();
             revalidate();
             repaint();
