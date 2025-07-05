@@ -131,7 +131,7 @@ public class RegistrationGUI extends JFrame {
                     ev.getCapacity(),
                     ev.getFee()
                 });
-                activeEventList.add(ev);  // 保证index匹配
+                activeEventList.add(ev);  
             }
         }
     }
