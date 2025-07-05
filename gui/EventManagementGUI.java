@@ -174,12 +174,12 @@ public class EventManagementGUI extends JFrame {
         StringBuilder sb = new StringBuilder();
         for (var r : regs) {
             sb.append("- ")
-              .append(r.getParticipant().getName())
-              .append(" (").append(r.getParticipant().getId()).append(")")
-              .append(", groupSize: ").append(r.getGroupSize())
-              .append(", catering: ").append(r.hasCatering())
-              .append(", transport: ").append(r.hasTransportation())
-              .append("\n");
+            .append(r.getParticipant().getName())
+            .append(" (").append(r.getParticipant().getId()).append(")\n")
+            .append("  Group Size: ").append(r.getGroupSize()).append("\n")
+            .append("  Catering: ").append(r.hasCatering() ? "Yes" : "No").append("\n")
+            .append("  Transport: ").append(r.hasTransportation() ? "Yes" : "No").append("\n")
+            .append("----------------------------\n");
         }
         JOptionPane.showMessageDialog(this, sb.toString(),
                 "Registrations for " + ev.getName(),
