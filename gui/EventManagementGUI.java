@@ -168,7 +168,7 @@ public class EventManagementGUI extends JFrame {
             eventManager.addEvent(ev);
             refreshEventTable();
             clearFields();
-        } catch(Exception ex) {
+        } catch (NumberFormatException | NullPointerException ex)  {
             JOptionPane.showMessageDialog(this,"Invalid or missing data!");
         }
     }
@@ -201,7 +201,7 @@ public class EventManagementGUI extends JFrame {
             refreshEventTable();
             clearFields();
             JOptionPane.showMessageDialog(this,"Event updated successfully!");
-        } catch(Exception ex) {
+        } catch (NumberFormatException | NullPointerException ex)  {
             JOptionPane.showMessageDialog(this,"Invalid or missing data!");
         }
     }
