@@ -25,11 +25,7 @@ public class EventManager {
         return eventList;
     }
 
-    /**
-     * Update event properties WITHOUT replacing the object reference,
-     * so that Registration still points to the same event.
-     */
-    public void updateEvent(int index, Event updatedEvent) {
+public void updateEvent(int index, Event updatedEvent) {
         if (index >= 0 && index < eventList.size()) {
             Event existing = eventList.get(index);
             existing.setName(updatedEvent.getName());
